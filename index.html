@@ -8,14 +8,7 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* Evita rebotes de scroll molestos en navegadores móviles */
-      html, body {
-        min-height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: #1a1637;
-      }
-      /* Clase personalizada para el fondo en mosaico (tiled) */
+      /* Fondo en mosaico manejado como utilitario custom */
       .bg-tiled-pattern {
         background-color: #1a1637;
         background-image: url('TemplateData/bg_pattern.png');
@@ -24,50 +17,52 @@
       }
     </style>
   </head>
-  <body class="text-slate-100 font-sans flex flex-col justify-start items-center selection:bg-indigo-500/30">
+  <body class="bg-[#1a1637] text-slate-100 font-sans flex flex-col min-h-screen justify-start items-center selection:bg-indigo-500/30 m-0 p-0">
 
-    <!-- Cabecera: Barra superior oscura con el logo del juego -->
-    <header class="hidden lg:flex w-full bg-[#1B1230] py-1.5 justify-center items-center shadow-md z-10 shrink-0">
-        <div class="logo-container flex items-center justify-center gap-2">
-            <img src="TemplateData/Logo.png" alt="Dooika" class="game-logo max-h-8 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span style="display: none;" class="text-sm font-black text-white tracking-widest uppercase">Dooika</span>
+    <!-- Cabecera: Logo centrado simétricamente -->
+    <header class="hidden lg:flex w-full bg-[#1B1230] py-2 justify-center items-center shadow-md z-10 shrink-0 min-h-[56px]">
+        <div class="flex items-center justify-center">
+            <img src="TemplateData/Logo.png" alt="Dooika" class="game-logo h-14 w-auto block object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span style="display: none;" class="text-base font-black text-white tracking-widest uppercase">Dooika</span>
         </div>
     </header>
 
-    <!-- Banner para notificaciones y errores del motor Unity -->
-    <div id="unity-warning" class="fixed top-4 z-50 max-w-md w-full px-4" style="display:none;"></div>
+    <!-- Banner de notificaciones/errores de Unity -->
+    <div id="unity-warning" class="fixed top-4 z-50 max-w-md w-full px-4 hidden"></div>
 
-    <!-- Layout Principal: bg-tiled-pattern solo se activa en pantallas de escritorio (lg:) -->
+    <!-- Layout Principal -->
     <main class="w-full flex flex-col items-center justify-center p-0 lg:p-8 bg-tiled-pattern flex-1">
 
-        <!-- Contenedor del Juego: Redondeado en escritorio, pantalla completa en celular -->
+        <!-- Contenedor del Juego -->
         <div id="unity-container-wrapper" class="w-full flex flex-col items-center max-w-none lg:max-w-[338px]">
           <div id="unity-container" class="relative overflow-hidden rounded-none lg:rounded-3xl lg:border-2 lg:border-[#2f275c] bg-[#1B1230] shadow-2xl w-full" style="aspect-ratio: 338 / 600;">
               <canvas id="unity-canvas" tabindex="-1" class="w-full h-full block"></canvas>
-              <div id="unity-loading-bar" class="position: absolute; top: 0; left: 0; width: 100%; height:100%; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; background-color: #1a1637;">
+              
+              <!-- Overlay de Carga -->
+              <div id="unity-loading-bar" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#1a1637]">
                   <div id="unity-progress-bar-empty" class="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div id="unity-progress-bar-full" class="h-full bg-indigo-500 transition-all duration-150" style="width: 0%;"></div>
+                      <div id="unity-progress-bar-full" class="h-full bg-indigo-500 transition-all duration-150 w-0"></div>
                   </div>
               </div>
           </div>
 
-          <!-- Botón de Pantalla Completa: Estilo redondeado y oscuro-->
+          <!-- Botón de Pantalla Completa -->
           <button id="unity-fullscreen-button" class="hidden lg:flex mt-6 px-8 py-2 bg-[#120e29] border border-[#2b2254] hover:border-indigo-500/50 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all duration-200 items-center gap-2 text-slate-300 hover:text-[#D3C5EF] shadow-lg">
-                <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path d="M1 1v6h2V3h4V1H1zm12 0v2h4v4h2V1h-6zM1 19h6v-2H3v-4H1v6zm16-4v4h-4v2h6v-6h-2z"/></svg>
-                Full Screen
-            </button>
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor"><path d="M1 1v6h2V3h4V1H1zm12 0v2h4v4h2V1h-6zM1 19h6v-2H3v-4H1v6zm16-4v4h-4v2h6v-6h-2z"/></svg>
+              Full Screen
+          </button>
         </div>
 
     </main>
 
-    <!-- Footer: Barra inferior oscura con copyright -->
+    <!-- Footer -->
     <footer class="hidden lg:flex w-full bg-[#110d26] py-4 justify-center items-center border-t border-[#1a153b] shrink-0">
-        <div class="text-center text-slate-500 text-[10px] text-[#514966] tracking-[0.2em] uppercase font-semibold">
+        <div class="text-center text-[10px] text-[#514966] tracking-[0.2em] uppercase font-semibold">
             &copy; Picatchi Games - Dooika
         </div>
     </footer>
 
-    <!-- Script oficial de inicialización para Unity -->
+    <!-- Script de inicialización de Unity -->
     <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -119,7 +114,6 @@
         container.style.removeProperty('aspect-ratio');
         container.style.width = "100vw";
 
-        // En móviles quitamos el fondo pesado para optimizar rendimiento
         var mainLayout = document.querySelector("main");
         if(mainLayout) mainLayout.style.backgroundImage = "none";
 
@@ -143,17 +137,17 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                loadingBar.style.display = "none";
-                if (fullscreenButton) {
-                  fullscreenButton.onclick = () => {
-                    unityInstance.SetFullscreen(1);
-                  };
-                }
-              }).catch((message) => {
-                unityShowBanner(message, 'error');
-              });
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          if (fullscreenButton) {
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
             };
+          }
+        }).catch((message) => {
+          unityShowBanner(message, 'error');
+        });
+      };
 
       document.body.appendChild(script);
     </script>

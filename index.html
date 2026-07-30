@@ -15,11 +15,14 @@
         background-repeat: repeat;
         background-size: auto;
       }
-      .game-aspect-container {
-        aspect-ratio: 338 / 600;
-        height: min(72vh, 800px);
-        max-width: 90vw;
-        width: auto;
+      @media (min-width: 1024px) {
+        .game-canvas-responsive {
+          aspect-ratio: 338 / 600;
+          /* Se escala dinámicamente según la altura o el ancho disponible sin deformarse */
+          height: min(70vh, 750px);
+          max-width: min(90vw, calc(70vh * (338 / 600)));
+          width: auto;
+        }
       }
     </style>
   </head>
@@ -39,10 +42,8 @@
     <!-- Layout Principal -->
     <main class="w-full flex flex-col items-center justify-center p-0 lg:py-4 lg:px-4 bg-tiled-pattern flex-1 my-auto">
 
-      <div id="unity-container-wrapper" class="w-full flex flex-col items-center justify-center my-auto">
-
         <!-- Contenedor del Juego -->
-        <div id="unity-container" class="relative overflow-hidden rounded-none lg:rounded-[32px] lg:border-2 lg:border-[#2f275c] bg-[#1B1230] shadow-2xl w-full lg:w-auto game-aspect-container">
+        <div id="unity-container" class="relative overflow-hidden rounded-none lg:rounded-[32px] lg:border-2 lg:border-[#2f275c] bg-[#1B1230] shadow-2xl w-full game-canvas-responsive flex items-center justify-center">
             <canvas id="unity-canvas" class="w-full h-full block object-contain" tabindex="-1"></canvas>
             
             <!-- Overlay de Carga -->
@@ -53,12 +54,11 @@
             </div>
         </div>
 
-          <!-- Botón de Pantalla Completa -->
-          <button id="unity-fullscreen-button" class="hidden lg:flex mt-4 px-10 py-2.5 bg-[#1B1230] border border-[#2b2254] hover:border-indigo-500/50 text-xs font-bold uppercase tracking-[0.2em] rounded-full transition-all duration-200 items-center gap-2.5 text-[#D3C5EF] hover:text-[#D3C5EF] shadow-lg hover:scale-105 active:scale-95">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M1 1v6h2V3h4V1H1zm12 0v2h4v4h2V1h-6zM1 19h6v-2H3v-4H1v6zm16-4v4h-4v2h6v-6h-2z"/></svg>
-              FULL SCREEN
-          </button>
-        </div>
+        <!-- Botón de Pantalla Completa -->
+        <button id="unity-fullscreen-button" class="hidden lg:flex mt-4 px-10 py-2.5 bg-[#1B1230] border border-[#2b2254] hover:border-indigo-500/50 text-xs font-bold uppercase tracking-[0.2em] rounded-full transition-all duration-200 items-center gap-2.5 text-[#D3C5EF] hover:text-[#D3C5EF] shadow-lg hover:scale-105 active:scale-95">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M1 1v6h2V3h4V1H1zm12 0v2h4v4h2V1h-6zM1 19h6v-2H3v-4H1v6zm16-4v4h-4v2h6v-6h-2z"/></svg>
+            FULL SCREEN
+        </button>
 
     </main>
 
@@ -120,7 +120,7 @@
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
         
-        container.classList.remove('game-aspect-container');
+        container.className = "w-full h-full";
         container.style.width = "100vw";
 
         var mainLayout = document.querySelector("main");
@@ -137,7 +137,6 @@
         window.addEventListener('resize', adjustMobileLayout);
         window.addEventListener('orientationchange', adjustMobileLayout);
       } else {
-        // Asignación explícita para que la instancia de Unity cargue correctamente en escritorio
         canvas.style.width = "100%";
         canvas.style.height = "100%";
       }

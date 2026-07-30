@@ -136,6 +136,10 @@
         adjustMobileLayout();
         window.addEventListener('resize', adjustMobileLayout);
         window.addEventListener('orientationchange', adjustMobileLayout);
+      } else {
+        // Asignación explícita para que la instancia de Unity cargue correctamente en escritorio
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
       }
 
       var script = document.createElement("script");

@@ -116,43 +116,59 @@
                      (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
 
       if (isMobile) {
-        // 1. Ocultar interfaz secundaria (Header, Footer y Botón de Fullscreen)
+        // 1. Ocultar interfaz secundaria
         document.querySelector("#app-header").style.display = "none";
         document.querySelector("#app-footer").style.display = "none";
         document.querySelector("#fullscreen-wrapper").style.display = "none";
 
-        // 2. Modificar contenedor para pantalla completa sin bordes ni padding
+        // 2. Limpiar márgenes, paddings y ALINEAR AL INICIO (Top)
         var mainLayout = document.querySelector("#app-main");
         if (mainLayout) {
           mainLayout.style.padding = "0px";
+          mainLayout.style.margin = "0px";
           mainLayout.style.backgroundImage = "none";
+          mainLayout.style.justifyContent = "flex-start"; // Elimina el centrado vertical que deja la franja azul arriba
+          mainLayout.style.alignItems = "stretch";
         }
 
+        var wrapper = document.querySelector("#unity-container-wrapper");
+        if (wrapper) {
+          wrapper.style.margin = "0px";
+          wrapper.style.padding = "0px";
+          wrapper.style.justifyContent = "flex-start";
+        }
+
+        // 3. Resetear contenedor para que ocupe el 100% real de la pantalla
         container.style.borderRadius = "0px";
         container.style.border = "none";
-        container.style.maxHeight = "100vh";
+        container.style.maxHeight = "none";
+        container.style.margin = "0px";
         container.style.removeProperty('aspect-ratio');
-        container.style.width = "100vw";
 
+        // 4. Viewport
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
-        
 
+        // 5. Ajustar altura exacta usando visualViewport (para eliminar la franja azul en Chrome/Safari)
         function adjustMobileLayout() {
-          var wHeight = window.innerHeight + "px";
-          container.style.height = wHeight;
-          canvas.style.width = "100vw";
-          canvas.style.height = wHeight;
+          // Usamos visualViewport si está disponible para ignorar la barra del navegador
+          var vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+          var vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+          
+          container.style.width = vWidth + "px";
+          container.style.height = vHeight + "px";
+          canvas.style.width = vWidth + "px";
+          canvas.style.height = vHeight + "px";
         }
 
         adjustMobileLayout();
         window.addEventListener('resize', adjustMobileLayout);
         window.addEventListener('orientationchange', adjustMobileLayout);
-      } else {
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', adjustMobileLayout);
+        }
       }
 
       var script = document.createElement("script");
